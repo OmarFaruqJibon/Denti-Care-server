@@ -60,6 +60,7 @@ async function run(){
             const cursor = appoinmentsCollection.find(query);
             const appoinments = await cursor.toArray();
             res.json(appoinments);
+            console.log(appoinments);
         });
 
         // get admins from db
@@ -163,6 +164,7 @@ async function run(){
     }
 }
 run().catch(console.dir);
+
 
 
 
