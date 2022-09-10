@@ -12,16 +12,19 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const serviceAccount = require('./doctors-portal-firebase-adminsdk.json');
+
+// const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
-
 
 app.use(cors());
 app.use(express.json());
 
 // --------------------------------------------------------------------
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.gqaks.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
@@ -164,7 +167,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req,res)=>{
-    res.send('Welcome to Doctors Portal server');
+    res.send('Welcome to DentCare server');
 });
 app.listen(port, ()=>{
     console.log('Running on port: ', port);
