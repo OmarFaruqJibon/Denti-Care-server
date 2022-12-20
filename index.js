@@ -11,9 +11,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const app = express();
 const port = process.env.PORT || 5000;
 
-// const serviceAccount = require('./doctors-portal-firebase-adminsdk.json');
+const serviceAccount = require('./doctors-portal-firebase-adminsdk.json');
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+// const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
