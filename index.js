@@ -43,6 +43,8 @@ async function verifyToken(req, res, next){
     next();
 }
 
+
+
 async function run(){
     try{
         await client.connect();
@@ -50,6 +52,7 @@ async function run(){
         const database = client.db("Doctors_Portal");
         const appoinmentsCollection = database.collection("Appoinments");
         const usersCollection = database.collection("Users");
+        const reviewCollection = database.collection("Reviews");
 
 
         // get appoinments in UI by filtering email
@@ -60,7 +63,7 @@ async function run(){
             const cursor = appoinmentsCollection.find(query);
             const appoinments = await cursor.toArray();
             res.json(appoinments);
-            console.log(appoinments);
+            // console.log(appoinments);
         });
 
         // get admins from db
@@ -75,6 +78,15 @@ async function run(){
             res.json({admin: isAdmin});
         });
 
+        // get user info
+        app.get('/users', async(req,res)=> {
+
+            const cursor = await usersCollection.find();
+            const users = await cursor.toArray();
+            res.json(users);
+            console.log(users);
+        });
+
 
         // get payment service info
         app.get('/appoinments/:id', async(req,res)=> {
@@ -84,7 +96,14 @@ async function run(){
             const result = await appoinmentsCollection.findOne(query);
             console.log('result: ',result);
             res.json(result);
-        })
+        });
+
+        // GET all reviews
+        app.get('/reviews', async (req, res) => {
+            const cursor =  reviewCollection.find({});
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        });
 
         // add all appoinments to db
         app.post('/appoinments', async(req,res)=>{
@@ -97,9 +116,17 @@ async function run(){
         app.post('/users', async(req,res)=>{
             const user = req.body;
             const result = await usersCollection.insertOne(user);
-            console.log(result);
+            // console.log(result);
             res.json(result);
-        })
+        });
+
+
+        // post review api to db
+        app.post('/reviews', async(req,res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.json(result);
+        });
 
         // update user for google log in
         app.put('/users', async(req,res)=>{
@@ -148,7 +175,16 @@ async function run(){
             };
             const result = await appoinmentsCollection.updateOne(filter, updateDoc);
             res.json(result);
-        })
+        });
+
+
+                //DELETE car API
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await reviewCollection.deleteOne(query);
+            res.json(1);
+        });
 
 
     }
