@@ -53,7 +53,13 @@ async function run(){
         const appoinmentsCollection = database.collection("Appoinments");
         const usersCollection = database.collection("Users");
         const reviewCollection = database.collection("Reviews");
+        const testReportCollection = database.collection("TestReport");
 
+
+
+
+
+                // ------------------------------------ get request ----------------------------------
 
         // get appoinments in UI by filtering email
         app.get('/appoinments', async(req,res)=>{
@@ -84,7 +90,7 @@ async function run(){
             const cursor = await usersCollection.find();
             const users = await cursor.toArray();
             res.json(users);
-            console.log(users);
+            // console.log(users);
         });
 
 
@@ -94,7 +100,7 @@ async function run(){
             const query = {_id: ObjectId(id)};
             console.log(query);
             const result = await appoinmentsCollection.findOne(query);
-            console.log('result: ',result);
+            // console.log('result: ',result);
             res.json(result);
         });
 
@@ -104,6 +110,22 @@ async function run(){
             const reviews = await cursor.toArray();
             res.send(reviews);
         });
+
+
+        app.get('/reports', async(req, res) => {
+            const cursor = testReportCollection.find({});
+            const reports = await cursor.toArray();
+            res.send(reports);
+        });
+
+
+
+
+
+
+
+
+                // ------------------------------------ post request ----------------------------------
 
         // add all appoinments to db
         app.post('/appoinments', async(req,res)=>{
@@ -127,6 +149,24 @@ async function run(){
             const result = await reviewCollection.insertOne(review);
             res.json(result);
         });
+
+
+        app.post('/reports', async(req, res) => {
+            const reports = req.body;
+            const result = await testReportCollection.insertOne(reports);
+            res.json(result);
+        });
+
+
+
+
+
+
+
+
+
+
+        // ------------------------------------ put request ----------------------------------
 
         // update user for google log in
         app.put('/users', async(req,res)=>{
