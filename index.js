@@ -84,6 +84,20 @@ async function run(){
         });
 
 
+        // get reports in UI by filtering email
+        app.get('/reports', async(req,res)=>{
+            console.log("reports: " + req.body);
+
+            const email = req.query.email;
+            const query = {email: email};
+            const cursor = testReportCollection.find(query);
+            const reports = await cursor.toArray();
+            res.json(reports);
+            
+            console.log(reports);
+        });
+
+
         // get admins from db
         app.get('/users/admin/:email', async(req,res)=>{
             const email = req.params.email;
