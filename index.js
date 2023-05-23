@@ -137,7 +137,12 @@ async function run(){
 
 
 
-
+        // GET all donors
+        app.get('/donors', async (req, res) => {
+            const cursor =  bloodDonorsCollection.find({});
+            const donors = await cursor.toArray();
+            res.send(donors);
+        });
 
 
 
@@ -261,11 +266,19 @@ async function run(){
         });
 
 
-                //DELETE car API
+        //DELETE car API
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
             const result = await reviewCollection.deleteOne(query);
+            res.json(1);
+        });
+
+        //DELETE car API
+        app.delete('/donors/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await bloodDonorsCollection.deleteOne(query);
             res.json(1);
         });
 
