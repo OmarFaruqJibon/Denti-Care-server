@@ -62,8 +62,18 @@ async function run(){
 
                 // ------------------------------------ get request ----------------------------------
 
-        // get appoinments in UI by filtering email
+        // get all appoinments
+        
         app.get('/appoinments', async(req,res)=>{
+            const cursor = appoinmentsCollection.find({});
+            const appoinments = await cursor.toArray();
+            res.json(appoinments);
+            console.log(appoinments);
+        });
+
+        // get appoinments in UI by filtering email
+        app.get('/appoinments/find', async(req,res)=>{
+            console.log("appointments: " + req.body);
             const email = req.query.email;
             const date = req.query.date;
             const query = {email: email,  date: date };
@@ -72,6 +82,7 @@ async function run(){
             res.json(appoinments);
             // console.log(appoinments);
         });
+
 
         // get admins from db
         app.get('/users/admin/:email', async(req,res)=>{
