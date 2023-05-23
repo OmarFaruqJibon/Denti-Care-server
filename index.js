@@ -54,6 +54,7 @@ async function run(){
         const usersCollection = database.collection("Users");
         const reviewCollection = database.collection("Reviews");
         const testReportCollection = database.collection("TestReport");
+        const bloodDonorsCollection = database.collection("BloodDonor");
 
 
 
@@ -73,15 +74,31 @@ async function run(){
         });
 
         // get admins from db
-        app.get('/users/:email', async(req,res)=>{
+        app.get('/users/admin/:email', async(req,res)=>{
             const email = req.params.email;
             const query = { email: email };
+            console.log(query);
             const user = await usersCollection.findOne(query);
             let isAdmin = false;
             if(user?.role === 'admin'){
                 isAdmin= 'true';
             }
             res.json({admin: isAdmin});
+        });
+
+        // get doctors from db
+        app.get('/users/doctor/:email', async(req,res)=>{
+            const email = req.params.email;
+            const query = { email: email };
+
+            const user = await usersCollection.findOne(query);
+
+            let isDoctor = false;
+
+            if(user?.role === 'doctor'){
+                isDoctor= 'true';
+            }
+            res.json({doctor: isDoctor});
         });
 
         // get user info
@@ -158,8 +175,12 @@ async function run(){
         });
 
 
-
-
+        // post blood donors api to db
+        app.post('/donors', async(req,res) => {
+            const donor = req.body;
+            const result = await bloodDonorsCollection.insertOne(donor);
+            res.json(result);
+        });
 
 
 
@@ -179,16 +200,37 @@ async function run(){
 
         });
         
+
         // add admin role
         app.put('/users/admin', verifyToken, async(req,res)=>{
             const user = req.body;
-            // console.log(req.decodedEmail);
+            console.log("admin", req.decodedEmail);
+
             const filter = { email: user.email };
+            console.log(filter);
             const updateDoc = { $set:{ role: 'admin'} };
             const result = await usersCollection.updateOne(filter, updateDoc);
             res.json(result);
 
         });
+
+
+        
+        // add doctor role
+        app.put('/users/doctor', async(req,res)=>{
+            const user = req.body;
+            console.log(user);
+
+            const filter = { email: user.email };
+            console.log(filter);
+
+            const updateDoc = { $set:{ role: 'doctor'} };
+
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.json(result);
+
+        });
+
 
 
         // post payment method
@@ -213,6 +255,7 @@ async function run(){
                     payment: payment
                 }
             };
+
             const result = await appoinmentsCollection.updateOne(filter, updateDoc);
             res.json(result);
         });
