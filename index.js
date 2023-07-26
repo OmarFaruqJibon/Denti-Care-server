@@ -55,6 +55,7 @@ async function run(){
         const reviewCollection = database.collection("Reviews");
         const testReportCollection = database.collection("TestReport");
         const bloodDonorsCollection = database.collection("BloodDonor");
+        const blogCollection = database.collection("Blog");
 
 
 
@@ -170,6 +171,14 @@ async function run(){
         });
 
 
+        // GET all donors
+        app.get('/blogs', async (req, res) => {
+            const cursor =  blogCollection.find({});
+            const blogs = await cursor.toArray();
+            res.send(blogs);
+        });
+
+
 
 
                 // ------------------------------------ post request ----------------------------------
@@ -209,6 +218,14 @@ async function run(){
         app.post('/donors', async(req,res) => {
             const donor = req.body;
             const result = await bloodDonorsCollection.insertOne(donor);
+            res.json(result);
+        });
+
+
+        // post blood donors api to db
+        app.post('/blogs', async(req,res) => {
+            const blog = req.body;
+            const result = await blogCollection.insertOne(blog);
             res.json(result);
         });
 
